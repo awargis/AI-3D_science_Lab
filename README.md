@@ -1,15 +1,49 @@
 # 🔬 AI 3D Science Lab
 
-AI 3D Science Lab converts a natural-language scientific visualization request into an interactive 3D educational simulation using Gemini and Three.js.
+AI 3D Science Lab converts a natural-language scientific visualization request into a premium interactive Three.js simulation using Gemini and Streamlit.
 
-## Stack
+## Features
 
-- Python
-- Streamlit
-- Google `google-genai`
-- Gemini 2.5 Flash
-- Three.js
-- OrbitControls
+- Runtime Gemini API-key input.
+- Gemini model selector.
+- Premium Streamlit dashboard.
+- Physics, Chemistry, Mathematics, Biology and other domains.
+- Gemini-generated standalone Three.js HTML.
+- OrbitControls for mouse rotation, pan and zoom.
+- Functional simulation controls.
+- Automatic HTML/Markdown cleanup.
+- HTML source inspection.
+- Safe handling of incompatible Live/Image models.
+
+## Gemini model selector
+
+The sidebar includes these requested model IDs:
+
+```text
+gemini-3.8-flash
+gemini-3.8-live
+gemini-3.8-live-extended-thinking
+gemini-3.1-pro-preview
+gemini-3.1-flash-image
+gemini-3.5-flash
+gemini-3.5-flash-lite
+gemini-2.5-pro
+gemini-2.5-flash
+```
+
+The Live and Image models are displayed in the dropdown but are deliberately not sent to the text `generate_content` workflow. Selecting one produces a clear UI message instead of an unhandled API failure.
+
+For this particular application, use a text-generation model such as:
+
+```text
+gemini-3.8-flash
+```
+
+or:
+
+```text
+gemini-3.1-pro-preview
+```
 
 ## Repository
 
@@ -18,119 +52,108 @@ ai-3d-science-lab/
 ├── app.py
 ├── prompt_template.py
 ├── requirements.txt
-└── README.md
+├── README.md
+└── .gitignore
 ```
 
-## Local Setup
-
-### 1. Clone
+## Local installation
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/ai-3d-science-lab.git
 cd ai-3d-science-lab
+python -m venv .venv
 ```
-
-### 2. Create a virtual environment
 
 Windows:
 
 ```bash
-python -m venv .venv
 .venv\Scripts\activate
 ```
 
 macOS/Linux:
 
 ```bash
-python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3. Install dependencies
+Install:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configure the Gemini API key
-
-Create:
-
-```text
-.streamlit/secrets.toml
-```
-
-with:
-
-```toml
-GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
-```
-
-Never commit this file.
-
-Recommended `.gitignore`:
-
-```text
-.streamlit/secrets.toml
-.venv/
-__pycache__/
-*.pyc
-```
-
-### 5. Run
+Run:
 
 ```bash
 streamlit run app.py
 ```
 
-Open the URL shown by Streamlit, normally:
+## API key
 
-```text
-http://localhost:8501
-```
+The application now allows the user to paste the Gemini API key directly into the sidebar.
 
-## Streamlit Community Cloud
+The key is NOT stored in the project source code.
 
-1. Push `app.py`, `prompt_template.py`, `requirements.txt`, and `README.md` to GitHub.
+Do not commit a Gemini API key to GitHub.
+
+## Streamlit Cloud
+
+1. Push the repository to GitHub.
 2. Open Streamlit Community Cloud.
-3. Create a new app.
-4. Select your GitHub repository.
-5. Set the main file to `app.py`.
-6. Open **Advanced settings**.
-7. In **Secrets**, enter:
+3. Create a new application.
+4. Select the GitHub repository.
+5. Select `app.py` as the main file.
+6. Deploy.
+7. Paste the Gemini API key into the sidebar when using the app.
 
-```toml
-GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
-```
+If you prefer server-side secret management, you can also use Streamlit Secrets and modify the application to read `st.secrets["GEMINI_API_KEY"]`.
 
-8. Save and deploy.
-
-Do not put the API key in GitHub source code.
-
-## How It Works
+## Architecture
 
 ```text
-User request
-     ↓
-Streamlit sidebar
-     ↓
-Gemini 2.5 Flash
-     ↓
-Raw HTML + Three.js
-     ↓
-Markdown/code-fence cleanup
-     ↓
+User
+ ↓
+Streamlit Dashboard
+ ↓
+API Key + Model + Domain + Topic
+ ↓
+Google GenAI Client
+ ↓
+Gemini text model
+ ↓
+Raw HTML
+ ↓
+Markdown/HTML cleanup
+ ↓
 HTML validation
-     ↓
+ ↓
 Streamlit iframe
-     ↓
+ ↓
+Three.js + OrbitControls
+ ↓
 Interactive 3D simulation
 ```
 
-The application also exposes the generated HTML source in an expander for inspection and debugging.
+## Important model compatibility note
 
-## Important
+Not every Gemini model is a normal text-to-text model.
 
-Generated simulations are AI-generated code. Review scientifically important simulations before using them as authoritative teaching material.
+Live models are designed for real-time audio/live interactions, and image models are designed for image generation. They should not be treated as interchangeable with a normal HTML/code-generation model.
 
-Three.js and OrbitControls are loaded from a CDN, so the rendered simulation normally requires internet access.
+Therefore this application shows them in the model selector but prevents an incompatible selection from being submitted to the text-generation endpoint.
+
+## Scientific quality
+
+The system prompt strongly instructs Gemini to produce:
+
+- scientifically meaningful 3D objects
+- functional controls
+- responsive rendering
+- OrbitControls
+- animation
+- labels and annotations
+- polished dark UI
+- educational visual hierarchy
+- robust JavaScript
+
+AI-generated scientific simulations should still be reviewed before being used as authoritative teaching material.
